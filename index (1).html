@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>A very important question 🤍</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌹</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#ffffff;        /* her favorite color, front and center */
+    --mist:#fbf7f6;
+    --blush:#f6e7e9;
+    --rose:#c96f7e;
+    --rose-deep:#a4525f;
+    --ink:#37292e;
+    --muted:#96838a;
+    --gold:#c9a86a;
+    color-scheme: light;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  body{
+    font-family:'Jost',sans-serif;
+    font-weight:300;
+    color:var(--ink);
+    background:
+      radial-gradient(1100px 700px at 75% -10%, #ffffff 0%, var(--mist) 55%, #f7edee 100%);
+    min-height:100dvh;
+    display:grid;
+    place-items:center;
+    overflow-x:hidden;
+    padding:24px 16px;
+  }
+
+  /* ---------- drifting white petals ---------- */
+  .petals{position:fixed;inset:0;pointer-events:none;z-index:1;overflow:hidden}
+  .petal{
+    position:absolute;top:-8vh;
+    border-radius:100% 0 100% 0;
+    background:linear-gradient(135deg,#ffffff 20%,#f6dfe3 100%);
+    box-shadow:0 2px 8px rgba(201,111,126,.12);
+    animation:fall linear infinite;
+  }
+  @keyframes fall{
+    0%  {transform:translate(0,-8vh) rotate(0deg)}
+    50% {transform:translate(3vw,50vh) rotate(170deg)}
+    100%{transform:translate(-2vw,110vh) rotate(340deg)}
+  }
+
+  #fx{position:fixed;inset:0;pointer-events:none;z-index:6}
+
+  /* ---------- the invitation card ---------- */
+  .card{
+    position:relative;z-index:2;
+    width:min(92vw,520px);
+    background:var(--paper);
+    border:1px solid #f1e6e2;
+    border-radius:26px;
+    box-shadow:0 30px 80px rgba(164,82,95,.14), 0 4px 18px rgba(164,82,95,.06);
+    padding:52px 34px 44px;
+    text-align:center;
+  }
+  .card::before{
+    content:"";
+    position:absolute;left:34px;right:34px;top:26px;height:1px;
+    background:linear-gradient(90deg,transparent,var(--gold),transparent);
+    opacity:.7;
+  }
+  .eyebrow{
+    font-size:.72rem;letter-spacing:.32em;text-transform:uppercase;
+    color:var(--gold);font-weight:500;margin-bottom:18px;
+  }
+  h1{
+    font-family:'Cormorant Garamond',serif;
+    font-weight:600;
+    font-size:clamp(2.1rem,6.5vw,3rem);
+    line-height:1.12;
+    margin-bottom:14px;
+  }
+  h1 em{font-style:italic;color:var(--rose-deep)}
+  .sub{color:var(--muted);font-size:1.02rem;line-height:1.65;max-width:40ch;margin:0 auto 30px}
+
+  .screen{display:none}
+  .screen.active{display:block;animation:rise .55s ease both}
+  @keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+
+  /* ---------- buttons ---------- */
+  .btn{
+    font-family:'Jost',sans-serif;font-weight:500;font-size:1rem;
+    letter-spacing:.04em;
+    border-radius:999px;border:1.5px solid transparent;
+    padding:14px 34px;cursor:pointer;
+    transition:transform .25s ease, box-shadow .25s ease, background .25s ease;
+  }
+  .btn:focus-visible{outline:3px solid var(--rose);outline-offset:3px}
+  .btn-rose{
+    background:linear-gradient(135deg,var(--rose),var(--rose-deep));
+    color:#fff;
+    box-shadow:0 10px 26px rgba(164,82,95,.35);
+  }
+  .btn-rose:hover{transform:translateY(-2px);box-shadow:0 14px 30px rgba(164,82,95,.42)}
+  .btn-ghost{
+    background:#fff;color:var(--muted);border-color:#ecd9dc;
+  }
+  .choice-row{display:flex;gap:14px;justify-content:center;align-items:center;flex-wrap:wrap}
+  #yesBtn{transition:transform .3s cubic-bezier(.34,1.56,.64,1), box-shadow .25s}
+  #noBtn{z-index:7;transition:top .25s ease,left .25s ease,transform .25s ease}
+  .dodge-msg{
+    min-height:3.2em;display:flex;align-items:center;justify-content:center;
+    color:var(--rose-deep);font-size:.95rem;line-height:1.5;
+    padding:0 6px;margin-bottom:16px;
+  }
+
+  /* ---------- planner ---------- */
+  .fields{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:18px}
+  @media (max-width:420px){.fields{grid-template-columns:1fr}}
+  .field{text-align:left}
+  .field label{
+    display:block;font-size:.68rem;letter-spacing:.24em;text-transform:uppercase;
+    color:var(--muted);font-weight:500;margin-bottom:7px;
+  }
+  .field input{
+    width:100%;font-family:'Jost',sans-serif;font-size:1rem;color:var(--ink);
+    background:#fff;border:1.5px solid #ead9db;border-radius:14px;
+    padding:12px 14px;transition:border-color .2s, box-shadow .2s;
+  }
+  .field input:focus{outline:none;border-color:var(--rose);box-shadow:0 0 0 4px rgba(201,111,126,.14)}
+  .plan{
+    background:linear-gradient(135deg,#fff,var(--blush));
+    border:1px solid #f0dde0;border-radius:18px;
+    padding:16px 18px;margin-bottom:18px;
+    font-size:.95rem;line-height:1.6;color:var(--ink);text-align:left;
+  }
+  .plan strong{font-weight:500;color:var(--rose-deep)}
+  .nudge{
+    color:var(--rose-deep);font-size:.88rem;min-height:1.6em;margin-bottom:12px;
+  }
+  .nudge.shake{animation:shake .4s ease}
+  @keyframes shake{0%,100%{transform:none}25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+
+  /* ---------- confirmation ---------- */
+  .when{
+    font-family:'Cormorant Garamond',serif;font-style:italic;font-weight:500;
+    font-size:clamp(1.5rem,5vw,2rem);color:var(--rose-deep);
+    margin:6px 0 18px;
+  }
+  .rose-note{
+    display:inline-block;background:#fff;border:1px dashed var(--gold);
+    border-radius:14px;padding:12px 18px;font-size:.94rem;color:var(--ink);
+    margin-bottom:18px;line-height:1.5;
+  }
+  .tiny{font-size:.82rem;color:var(--muted);letter-spacing:.06em}
+
+  @media (prefers-reduced-motion:reduce){
+    .petal{animation:none;display:none}
+    .screen.active{animation:none}
+    .btn,#noBtn,#yesBtn{transition:none}
+  }
+</style>
+</head>
+<body>
+
+<div class="petals" aria-hidden="true"></div>
+<canvas id="fx" aria-hidden="true"></canvas>
+
+<main class="card">
+
+  <!-- Screen 0 · hello -->
+  <section class="screen active" id="s0">
+    <p class="eyebrow">An invitation · just for you</p>
+    <h1>Hey, <em id="herName">Beautiful</em> 🤍</h1>
+    <p class="sub">They say white is your favorite color. Makes sense — it's pure, bright, and quietly stunning. Exactly like you.</p>
+    <button class="btn btn-rose" id="beginBtn">I have a question for you</button>
+  </section>
+
+  <!-- Screen 1 · the question -->
+  <section class="screen" id="s1">
+    <p class="eyebrow">The big question</p>
+    <h1>Will you go on a <em>date</em> with me?</h1>
+    <p class="sub">One evening. Your smile, my nervous jokes, and a little green surprise at the end 🌹</p>
+    <div class="dodge-msg" id="dodgeMsg"></div>
+    <div class="choice-row">
+      <button class="btn btn-rose" id="yesBtn">Yes 🤍</button>
+      <button class="btn btn-ghost" id="noBtn">No</button>
+    </div>
+  </section>
+
+  <!-- Screen 2 · pick the moment -->
+  <section class="screen" id="s2">
+    <p class="eyebrow">She said yes 🎉</p>
+    <h1>Best. Answer. <em>Ever.</em></h1>
+    <p class="sub">Smart <span style="font-style:italic">and</span> gorgeous — I really did win. Now pick our moment:</p>
+    <div class="fields">
+      <div class="field">
+        <label for="dateInput">Date</label>
+        <input type="date" id="dateInput">
+      </div>
+      <div class="field">
+        <label for="timeInput">Time</label>
+        <input type="time" id="timeInput">
+      </div>
+    </div>
+    <div class="plan">
+      🌹 <strong>The plan:</strong> you, me, and we're picking out our rose plant together — something that grows. (Like this, hopefully.)
+    </div>
+    <div class="nudge" id="nudge"></div>
+    <button class="btn btn-rose" id="lockBtn">Lock in our date 💫</button>
+  </section>
+
+  <!-- Screen 3 · it's official -->
+  <section class="screen" id="s3">
+    <p class="eyebrow">It's official</p>
+    <h1>It's a <em>date</em> 🤍</h1>
+    <p class="when" id="whenLine"></p>
+    <p class="sub">I'll bring my best smile — fair warning, it still loses to yours.</p>
+    <div class="rose-note">🌹 Don't let me forget: one rose plant is coming home with us.</div>
+    <p class="tiny">📸 Screenshot this and send it to me.</p>
+  </section>
+
+</main>
+
+<script>
+/* ═══════════════════════════════════════════
+   ✏️  EDIT ME — personalize before deploying
+   ═══════════════════════════════════════════ */
+const HER_NAME = "Beautiful";   // ← put her actual name here, e.g. "Ananya"
+
+/* Compliments that appear each time she tries to press "No" */
+const DODGE_LINES = [
+  "Nope — that button doesn't work for someone this pretty 😌",
+  "It ran away. Even buttons get shy around you 🤍",
+  "Error 404: 'No' not found. Your smile, however — found everywhere ✨",
+  "Quick reminder while you chase that: you're gorgeous.",
+  "The button did a full lap. You still look perfect.",
+  "Okay, this is cardio now. Date first, gym later? 😄",
+  "It surrenders. Everything on this page says yes to you 🤍"
+];
+
+/* ---------- setup ---------- */
+document.getElementById('herName').textContent = HER_NAME;
+
+const screens = ['s0','s1','s2','s3'].map(id => document.getElementById(id));
+function goTo(n){
+  screens.forEach((s,i)=> s.classList.toggle('active', i===n));
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+
+const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+/* ---------- drifting white petals ---------- */
+(function petals(){
+  if (reduceMotion) return;
+  const wrap = document.querySelector('.petals');
+  for (let i=0;i<14;i++){
+    const p = document.createElement('span');
+    p.className = 'petal';
+    const size = 10 + Math.random()*12;
+    p.style.width = size+'px';
+    p.style.height = size+'px';
+    p.style.left = Math.random()*100 + 'vw';
+    p.style.opacity = (0.45 + Math.random()*0.45).toFixed(2);
+    const dur = 14 + Math.random()*12;
+    p.style.animationDuration = dur+'s';
+    p.style.animationDelay = (-Math.random()*dur)+'s';
+    wrap.appendChild(p);
+  }
+})();
+
+/* ---------- confetti (white + blush + gold) ---------- */
+const cv = document.getElementById('fx'), cx = cv.getContext('2d');
+function sizeCanvas(){ cv.width = innerWidth; cv.height = innerHeight; }
+sizeCanvas(); addEventListener('resize', sizeCanvas);
+let bits = [], fxRunning = false;
+const FX_COLORS = ['#ffffff','#fbeff1','#f3d3d9','#dfa4ae','#c9a86a'];
+function burst(n){
+  if (reduceMotion) return;
+  for (let i=0;i<n;i++){
+    bits.push({
+      x: innerWidth/2, y: innerHeight*0.35,
+      vx: (Math.random()-0.5)*11, vy: -(4+Math.random()*9),
+      g: 0.18, r: 3+Math.random()*5,
+      rot: Math.random()*6.28, vr: (Math.random()-0.5)*0.3,
+      c: FX_COLORS[(Math.random()*FX_COLORS.length)|0],
+      shape: Math.random()<0.5 ? 'r' : 'c'
+    });
+  }
+  if (!fxRunning){ fxRunning = true; requestAnimationFrame(tick); }
+}
+function tick(){
+  cx.clearRect(0,0,cv.width,cv.height);
+  bits = bits.filter(b => b.y < innerHeight + 30);
+  for (const b of bits){
+    b.vy += b.g; b.x += b.vx; b.y += b.vy; b.rot += b.vr;
+    cx.save(); cx.translate(b.x,b.y); cx.rotate(b.rot); cx.fillStyle = b.c;
+    if (b.shape==='r') cx.fillRect(-b.r, -b.r/2, b.r*2, b.r);
+    else { cx.beginPath(); cx.arc(0,0,b.r*0.7,0,6.28); cx.fill(); }
+    cx.restore();
+  }
+  if (bits.length){ requestAnimationFrame(tick); } else { fxRunning = false; }
+}
+
+/* ---------- flow ---------- */
+document.getElementById('beginBtn').addEventListener('click', ()=> goTo(1));
+
+const yesBtn  = document.getElementById('yesBtn');
+const noBtn   = document.getElementById('noBtn');
+const dodgeMsg= document.getElementById('dodgeMsg');
+let attempts = 0, surrendered = false, lastDodge = 0;
+
+function dodge(e){
+  if (surrendered) return;            // once it gives up, it behaves like "Yes"
+  e.preventDefault();
+  noBtn.blur();
+  const now = Date.now();
+  if (now - lastDodge < 200) return;  // one tap = one dodge (mobile fires several events)
+  lastDodge = now;
+  attempts++;
+
+  /* compliment her for trying */
+  dodgeMsg.textContent = DODGE_LINES[Math.min(attempts-1, DODGE_LINES.length-1)];
+
+  /* the Yes button blooms a little bigger every time */
+  yesBtn.style.transform = 'scale(' + (1 + Math.min(attempts*0.07, 0.55)).toFixed(2) + ')';
+
+  /* run away to a random safe spot on screen */
+  const pad = 16;
+  const w = noBtn.offsetWidth, h = noBtn.offsetHeight;
+  const x = pad + Math.random() * Math.max(1, innerWidth  - w - pad*2);
+  const y = pad + Math.random() * Math.max(1, innerHeight - h - pad*2);
+  noBtn.style.position = 'fixed';
+  noBtn.style.left = x + 'px';
+  noBtn.style.top  = y + 'px';
+  noBtn.style.transform = 'rotate(' + ((Math.random()*14)-7).toFixed(1) + 'deg)';
+
+  /* after enough chasing, "No" gives up entirely */
+  if (attempts >= DODGE_LINES.length){
+    surrendered = true;
+    noBtn.textContent = 'Okay fine — YES 🤍';
+    noBtn.classList.remove('btn-ghost');
+    noBtn.classList.add('btn-rose');
+    noBtn.style.transform = 'none';
+  }
+}
+['pointerenter','pointerdown','touchstart','focus','click'].forEach(ev =>
+  noBtn.addEventListener(ev, dodge, {passive:false})
+);
+noBtn.addEventListener('click', e => { if (surrendered) sayYes(); });
+
+function sayYes(){
+  noBtn.style.display = 'none';
+  burst(140);
+  goTo(2);
+  /* only future dates allowed */
+  const d = new Date();
+  const iso = d.getFullYear() + '-' +
+              String(d.getMonth()+1).padStart(2,'0') + '-' +
+              String(d.getDate()).padStart(2,'0');
+  document.getElementById('dateInput').min = iso;
+}
+yesBtn.addEventListener('click', sayYes);
+
+/* ---------- lock it in ---------- */
+document.getElementById('lockBtn').addEventListener('click', ()=>{
+  const dv = document.getElementById('dateInput').value;
+  const tv = document.getElementById('timeInput').value;
+  const nudge = document.getElementById('nudge');
+  if (!dv || !tv){
+    nudge.textContent = "Pick a date and a time, cutie — every option ends with a rose plant 🌹";
+    nudge.classList.remove('shake'); void nudge.offsetWidth; nudge.classList.add('shake');
+    return;
+  }
+  const when = new Date(dv + 'T' + tv);
+  const dateStr = when.toLocaleDateString('en-US', {weekday:'long', month:'long', day:'numeric'});
+  const timeStr = when.toLocaleTimeString('en-US', {hour:'numeric', minute:'2-digit'});
+  document.getElementById('whenLine').textContent = dateStr + ' · ' + timeStr;
+  burst(180);
+  goTo(3);
+});
+</script>
+</body>
+</html>
